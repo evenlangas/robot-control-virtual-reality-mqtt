@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class EndEffectorStatePublisher : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class EndEffectorStatePublisher : MonoBehaviour
     float oldPitch;
     float oldYaw;
     M2MqttUnity.Examples.M2MqttUnityTest mqttClient;
+    private bool firstIteration = true;
+    public ActionBasedController rightHand;
+    public ActionBasedController leftHand;
 
     void Start()
     {
@@ -95,7 +99,21 @@ public class EndEffectorStatePublisher : MonoBehaviour
             pitch = Mathf.Round(pitch * roundingFactor) / roundingFactor;
             yaw = Mathf.Round(yaw * roundingFactor) / roundingFactor;
 
-            if (Mathf.Abs(oldX - x) > 0.01 || Mathf.Abs(oldY - y) > 0.01 || Mathf.Abs(oldZ - z) > 0.01 || Mathf.Abs(oldRoll - roll) > 0.1 || Mathf.Abs(oldPitch - pitch) > 0.1 || Mathf.Abs(oldYaw - yaw) > 0.1)
+            if (firstIteration)
+            {
+                oldX = x;
+                oldY = y;
+                oldZ = z;
+                oldRoll = roll;
+                oldPitch = pitch;
+                oldYaw = yaw;
+                firstIteration = false;
+            }
+
+            bool rightTriggerPressed = rightHand.activateAction.action.ReadValue<float>() > 0.5f;
+            bool leftTriggerPressed = leftHand.activateAction.action.ReadValue<float>() > 0.5f;
+
+            if ((Mathf.Abs(oldX - x) > 0.01 || Mathf.Abs(oldY - y) > 0.01 || Mathf.Abs(oldZ - z) > 0.01 || Mathf.Abs(oldRoll - roll) > 0.1 || Mathf.Abs(oldPitch - pitch) > 0.1 || Mathf.Abs(oldYaw - yaw) > 0.1) && (rightTriggerPressed || leftTriggerPressed))
             {
                 float[] coordinates = {x,y,z};
                 float[] eulerAngles = {roll,pitch,yaw};

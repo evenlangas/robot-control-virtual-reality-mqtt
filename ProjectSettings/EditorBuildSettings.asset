@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Cobot.unity
     guid: 88214cbbdecd45741b4426dc7bac0d2a
-  m_configObjects: {}
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4bde68d33a950444f8d7756d34218975, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: db4470d82f0983b459eb81c08a6d404f, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 2d9309b58d500b944902d31ccc2aca38, type: 2}
