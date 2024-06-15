@@ -8,3 +8,7 @@ VR Robot Control: Intuitive control of a virtual robot representation within a U
 MQTT Communication: Leverages MQTT, a lightweight messaging protocol ideal for IoT devices and robotics, to transmit commands and potentially receive data.
 Customizable Robot Model: Easily replace the default robot model with your own robot design.
 Sensor Integration: Integration of sensor data from the physical robot back into the VR environment.
+
+
+Video can be seen on the following link:
+https://drive.google.com/file/d/1-PHIBYJ98Cfk90Qt5onyo6cpvmSN6yz8/view
