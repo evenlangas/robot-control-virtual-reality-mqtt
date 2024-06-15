@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class EndEffectorStatePublisher : MonoBehaviour
 {
-    public GameObject endEffector;
+    //public GameObject endEffector;
     public GameObject baseLink; // The base of the robot
     public GameObject ikSetpointReference; // Remove this
     private float baseX;
@@ -32,33 +32,33 @@ public class EndEffectorStatePublisher : MonoBehaviour
 
         baseX = baseLink.gameObject.transform.position.x;
         baseY = baseLink.gameObject.transform.position.y;
-        baseZ = baseLink.gameObject.transform.position.z; 
-        baseRoll = baseLink.gameObject.transform.eulerAngles.z;
-        basePitch = baseLink.gameObject.transform.eulerAngles.x;
-        baseYaw = baseLink.gameObject.transform.eulerAngles.y;
-        print("Base link:");
-        print("x:" + baseX.ToString() + ", y:" + baseY.ToString() + ", z:" + baseZ.ToString());
-        print("roll:" + baseRoll.ToString() + ", pitch:" + basePitch.ToString() + ", yaw:" + baseYaw.ToString());
+        baseZ = baseLink.gameObject.transform.position.z;
+        baseRoll = baseLink.gameObject.transform.eulerAngles.x;
+        basePitch = baseLink.gameObject.transform.eulerAngles.y;
+        baseYaw = baseLink.gameObject.transform.eulerAngles.z;
+        //print("Base link:");
+        //print("x:" + baseX.ToString() + ", y:" + baseY.ToString() + ", z:" + baseZ.ToString());
+        //print("roll:" + baseRoll.ToString() + ", pitch:" + basePitch.ToString() + ", yaw:" + baseYaw.ToString());
 
-        float x = endEffector.gameObject.transform.position.x;
-        float y = endEffector.gameObject.transform.position.y;
-        float z = endEffector.gameObject.transform.position.z;
-        float roll = endEffector.gameObject.transform.eulerAngles.x;
-        float pitch = endEffector.gameObject.transform.eulerAngles.y;
-        float yaw = endEffector.gameObject.transform.eulerAngles.z;
-        print("End effector (world):");
-        print("x:" + x.ToString() + ", y:" + y.ToString() + ", z:" + z.ToString());
-        print("roll:" + roll.ToString() + ", pitch:" + pitch.ToString() + ", yaw:" + yaw.ToString());
+        //float x = endEffector.gameObject.transform.position.x;
+        //float y = endEffector.gameObject.transform.position.y;
+        //float z = endEffector.gameObject.transform.position.z;
+        //float roll = endEffector.gameObject.transform.eulerAngles.x;
+        //float pitch = endEffector.gameObject.transform.eulerAngles.y;
+        //float yaw = endEffector.gameObject.transform.eulerAngles.z;
+        //print("End effector (world):");
+        //print("x:" + x.ToString() + ", y:" + y.ToString() + ", z:" + z.ToString());
+        //print("roll:" + roll.ToString() + ", pitch:" + pitch.ToString() + ", yaw:" + yaw.ToString());
 
-        x = endEffector.gameObject.transform.position.x - baseX;
-        y = endEffector.gameObject.transform.position.y - baseY;
-        z = endEffector.gameObject.transform.position.z - baseZ;
-        roll = endEffector.gameObject.transform.eulerAngles.x - baseRoll;
-        pitch = endEffector.gameObject.transform.eulerAngles.y - basePitch;
-        yaw = endEffector.gameObject.transform.eulerAngles.z - baseYaw;
-        print("End effector (relative to base):");
-        print("x:" + x.ToString() + ", y:" + y.ToString() + ", z:" + z.ToString());
-        print("roll:" + roll.ToString() + ", pitch:" + pitch.ToString() + ", yaw:" + yaw.ToString());
+        //x = endEffector.gameObject.transform.position.x - baseX;
+        //y = endEffector.gameObject.transform.position.y - baseY;
+        //z = endEffector.gameObject.transform.position.z - baseZ;
+        //roll = endEffector.gameObject.transform.eulerAngles.x - baseRoll;
+        //pitch = endEffector.gameObject.transform.eulerAngles.y - basePitch;
+        //yaw = endEffector.gameObject.transform.eulerAngles.z - baseYaw;
+        //print("End effector (relative to base):");
+        //print("x:" + x.ToString() + ", y:" + y.ToString() + ", z:" + z.ToString());
+        //print("roll:" + roll.ToString() + ", pitch:" + pitch.ToString() + ", yaw:" + yaw.ToString());
 
     }
 
@@ -67,12 +67,12 @@ public class EndEffectorStatePublisher : MonoBehaviour
         elapsedTime += Time.deltaTime;
         if (elapsedTime > 0.1f)
         {
-            //float x = -(endEffector.gameObject.transform.position.x - baseX);
-            //float y = -(endEffector.gameObject.transform.position.z - baseZ);
-            //float z = endEffector.gameObject.transform.position.y - baseY;
-            //float roll = mapAngles(180 - (endEffector.gameObject.transform.eulerAngles.z - baseRoll + 90));
-            //float pitch = mapAngles(endEffector.gameObject.transform.eulerAngles.x - basePitch);
-            //float yaw = mapAngles(-(endEffector.gameObject.transform.eulerAngles.y - baseYaw));
+            float xTemp = ikSetpointReference.gameObject.transform.position.z - baseZ;
+            float yTemp = ikSetpointReference.gameObject.transform.position.y - baseY;
+            float zTemp = -(ikSetpointReference.gameObject.transform.position.x - baseX);
+            float rollTemp = ikSetpointReference.gameObject.transform.eulerAngles.x - baseRoll;
+            float pitchTemp = ikSetpointReference.gameObject.transform.eulerAngles.y - basePitch;
+            float yawTemp = ikSetpointReference.gameObject.transform.eulerAngles.z - baseYaw;
 
             //int nrOfDecimals = 4;
             //float roundingFactor = Mathf.Pow(10, nrOfDecimals);
@@ -83,12 +83,21 @@ public class EndEffectorStatePublisher : MonoBehaviour
             //pitch = Mathf.Round(pitch * roundingFactor) / roundingFactor;
             //yaw = Mathf.Round(yaw * roundingFactor) / roundingFactor;
 
-            float x = ikSetpointReference.gameObject.transform.localPosition.z;
-            float y = -ikSetpointReference.gameObject.transform.localPosition.x;
-            float z = ikSetpointReference.gameObject.transform.localPosition.y;
-            float roll = mapAngles(-ikSetpointReference.gameObject.transform.localEulerAngles.z+90);
-            float pitch = mapAngles(ikSetpointReference.gameObject.transform.localEulerAngles.x);
-            float yaw = mapAngles(-ikSetpointReference.gameObject.transform.localEulerAngles.y);
+            //This works when gameobject is attatched to base, not with VR controller
+            //float x = ikSetpointReference.gameObject.transform.localPosition.z;
+            //float y = -ikSetpointReference.gameObject.transform.localPosition.x;
+            //float z = ikSetpointReference.gameObject.transform.localPosition.y;
+            //float roll = mapAngles(-ikSetpointReference.gameObject.transform.localEulerAngles.z+90);
+            //float pitch = mapAngles(ikSetpointReference.gameObject.transform.localEulerAngles.x);
+            //float yaw = mapAngles(-ikSetpointReference.gameObject.transform.localEulerAngles.y);
+
+            float x = zTemp;
+            float y = -xTemp;
+            float z = yTemp;
+            float roll = mapAngles(-yawTemp + 90);
+            float pitch = mapAngles(rollTemp);
+            float yaw = mapAngles(-pitchTemp);
+
 
             int nrOfDecimals = 4;
             float roundingFactor = Mathf.Pow(10, nrOfDecimals);
@@ -99,6 +108,7 @@ public class EndEffectorStatePublisher : MonoBehaviour
             pitch = Mathf.Round(pitch * roundingFactor) / roundingFactor;
             yaw = Mathf.Round(yaw * roundingFactor) / roundingFactor;
 
+            
             if (firstIteration)
             {
                 oldX = x;
@@ -115,6 +125,9 @@ public class EndEffectorStatePublisher : MonoBehaviour
 
             if ((Mathf.Abs(oldX - x) > 0.01 || Mathf.Abs(oldY - y) > 0.01 || Mathf.Abs(oldZ - z) > 0.01 || Mathf.Abs(oldRoll - roll) > 0.1 || Mathf.Abs(oldPitch - pitch) > 0.1 || Mathf.Abs(oldYaw - yaw) > 0.1) && (rightTriggerPressed || leftTriggerPressed))
             {
+
+                //print("IK setpoint pose:" + xTemp + ", " + yTemp + ", " + zTemp + ", " + "angles: " + rollTemp + ", " + pitchTemp + ", " + yawTemp);
+                //print("IK local pose   :" + ikSetpointReference.gameObject.transform.localPosition.x + ", " + ikSetpointReference.gameObject.transform.localPosition.y + ", " + ikSetpointReference.gameObject.transform.localPosition.z + ", " + "angles: " + ikSetpointReference.gameObject.transform.eulerAngles.x + ", " + ikSetpointReference.gameObject.transform.eulerAngles.y + ", " + ikSetpointReference.gameObject.transform.eulerAngles.z);
                 float[] coordinates = {x,y,z};
                 float[] eulerAngles = {roll,pitch,yaw};
 

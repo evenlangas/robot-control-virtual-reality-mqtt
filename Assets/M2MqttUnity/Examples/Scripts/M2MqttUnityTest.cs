@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -58,7 +59,9 @@ namespace M2MqttUnity.Examples
         private List<string> eventMessages = new List<string>();
         private bool updateUI = false;
         private bool connected = false;
-        
+        private List<double> outputTime = new List<double>();
+        private List<double> inputTime = new List<double>();
+
         public bool getConnectionStatus()
         {
             return connected;
@@ -85,6 +88,15 @@ namespace M2MqttUnity.Examples
             // jointAngles.Add(2.0f);
             // jointAngles.Add(92.02f);
             // PublishJoints(jointAngles);
+        }
+
+        public void PublishMessage(string topic, string msg)
+        {
+            client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(msg), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+            if (topic == "/til-tak/drammen/production/line/latency-test/output")
+            {
+                outputTime.Add(Time.timeAsDouble);
+            }
         }
 
         public void PublishSetpoint(float[] coordinates, float[] eulerAngles)
@@ -169,7 +181,8 @@ namespace M2MqttUnity.Examples
         protected override void SubscribeTopics()
         {
             client.Subscribe(new string[] { "/til-tak/drammen/production/line/robot/data" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-            
+            client.Subscribe(new string[] { "/til-tak/drammen/production/line/latency-test/input" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            client.Subscribe(new string[] { "/til-tak/drammen/production/line/robot/control" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
         }
 
         protected override void UnsubscribeTopics()
@@ -251,39 +264,100 @@ namespace M2MqttUnity.Examples
         protected override void DecodeMessage(string topic, byte[] message)
         {
             string msg = System.Text.Encoding.UTF8.GetString(message);
+            Debug.Log("Topic: " + topic);
             Debug.Log("Received: " + msg);
-            
-            // StoreMessage(msg);
-            //string msg = client.WillMessage;
-            // if (msg.length != 0)
-            // {
+
+            if (topic == "/til-tak/drammen/production/line/robot/data")
+            {
                 float[] anglesInTemp = new float[6];
                 JSONObject data = new JSONObject(msg);
                 print(data.ToString());
-                // print(data.GetField("joint_1").ToString());
                 CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
                 ci.NumberFormat.CurrencyDecimalSeparator = ".";
-                        
-                
-                anglesInTemp[0] = (float)(double.Parse(data.GetField("joint_1").ToString().Trim('"'), NumberStyles.Any, ci));
-                anglesInTemp[1] = (float)(double.Parse(data.GetField("joint_2").ToString().Trim('"'), NumberStyles.Any, ci));
-                anglesInTemp[2] = (float)(double.Parse(data.GetField("joint_3").ToString().Trim('"'), NumberStyles.Any, ci));
-                anglesInTemp[3] = (float)(double.Parse(data.GetField("joint_4").ToString().Trim('"'), NumberStyles.Any, ci));
-                anglesInTemp[4] = (float)(double.Parse(data.GetField("joint_5").ToString().Trim('"'), NumberStyles.Any, ci));
-                anglesInTemp[5] = (float)(double.Parse(data.GetField("joint_6").ToString().Trim('"'), NumberStyles.Any, ci));
 
-                this.gameObject.GetComponent<UDPConverter>().anglesIn = anglesInTemp;
-            
-            // }
-            
-            // if (topic == "M2MQTT_Unity/test")
-            // {
-            //     if (autoTest)
-            //     {
-            //         autoTest = false;
-            //         Disconnect();
-            //     }
-            // }
+                try
+                {
+                    anglesInTemp[0] = (float)(double.Parse(data.GetField("joint_1").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[1] = (float)(double.Parse(data.GetField("joint_2").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[2] = (float)(double.Parse(data.GetField("joint_3").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[3] = (float)(double.Parse(data.GetField("joint_4").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[4] = (float)(double.Parse(data.GetField("joint_5").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[5] = (float)(double.Parse(data.GetField("joint_6").ToString().Trim('"'), NumberStyles.Any, ci));
+                    this.gameObject.GetComponent<UDPConverter>().anglesIn = anglesInTemp;
+                    string path = "Assets/sensordata.txt"; 
+                    StreamWriter writer = new StreamWriter(path, true);
+                    writer.WriteLine(Time.time.ToString().Replace(",", ".") 
+                        + "," + anglesInTemp[0].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[1].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[2].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[3].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[4].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[5].ToString().Replace(",", "."));
+                    writer.Close();
+
+                }
+                catch
+                {
+                    print("ERROR: Message not in the correct format");
+                }
+
+            }
+            else if (topic == "/til-tak/drammen/production/line/robot/control")
+            {
+                float[] anglesInTemp = new float[6];
+                JSONObject data = new JSONObject(msg);
+                print(data.ToString());
+                CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
+                try
+                {
+                    anglesInTemp[0] = (float)(double.Parse(data.GetField("x").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[1] = (float)(double.Parse(data.GetField("y").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[2] = (float)(double.Parse(data.GetField("z").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[3] = (float)(double.Parse(data.GetField("roll").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[4] = (float)(double.Parse(data.GetField("pitch").ToString().Trim('"'), NumberStyles.Any, ci));
+                    anglesInTemp[5] = (float)(double.Parse(data.GetField("yaw").ToString().Trim('"'), NumberStyles.Any, ci));
+                    string path = "Assets/controldata.txt";
+                    StreamWriter writer = new StreamWriter(path, true);
+                    writer.WriteLine(Time.time.ToString().Replace(",", ".")
+                        + "," + anglesInTemp[0].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[1].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[2].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[3].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[4].ToString().Replace(",", ".")
+                        + "," + anglesInTemp[5].ToString().Replace(",", "."));
+                    writer.Close();
+                }
+                catch
+                {
+                    print("ERROR: Message not in the correct format");
+                }
+            }
+            else if (topic == "/til-tak/drammen/production/line/latency-test/input")
+            {
+                inputTime.Add(Time.timeAsDouble);
+                List<double> latency = new List<double>();
+                string outputString = "";
+                string inputString = "";
+                string latencyString = "";
+                for (int i = 0; i < inputTime.Count; i++)
+                {
+                    latency.Add(inputTime[i] - outputTime[i]);
+
+                    outputString += outputTime[i].ToString().Replace(",", ".") + ",";
+                    inputString += inputTime[i].ToString().Replace(",", ".") + ",";
+                    latencyString = latency[i].ToString().Replace(",", ".") + ",";
+                }
+
+                print("Output time  : " + outputString);
+                print("Input time   : " + inputString); 
+                print("Latency time : " + latencyString);
+                string path = "Assets/latencydata.txt";
+                StreamWriter writer = new StreamWriter(path, true);
+                writer.WriteLine(latencyString);
+                writer.Close();
+            }
         }
 
         private void StoreMessage(string eventMsg)

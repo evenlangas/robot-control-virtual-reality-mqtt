@@ -3489,6 +3489,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toolbox
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a17b450ac07d3e4cac7fddbdb7c9afb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7184,6 +7188,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23
       objectReference: {fileID: 0}
+    - target: {fileID: 2736478854845186207, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
+      propertyPath: m_ForwardSource
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2736478854845186207, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
+      propertyPath: m_HeadTransform
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2871854915733156393, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
       propertyPath: m_BackGroundColor.a
       value: 1
@@ -7211,6 +7223,14 @@ PrefabInstance:
     - target: {fileID: 2871854915827847855, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2871854915951832589, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999487018415155954, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
+      propertyPath: m_Camera
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4592956391713993908, guid: 65eb6b98091a5734ba9d9ca871cef69a, type: 3}
       propertyPath: m_Name
@@ -19891,6 +19911,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cubes
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d27a5dc6afdc91543be61970284688b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29497,6 +29521,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CeilingHungRack3
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2b8000d78f902a743a225f65d612c4d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30703,7 +30731,6 @@ GameObject:
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
-  - component: {fileID: 963194232}
   - component: {fileID: 963194233}
   - component: {fileID: 963194234}
   - component: {fileID: 963194236}
@@ -30733,7 +30760,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -30847,18 +30874,6 @@ MonoBehaviour:
   sixthCam: {fileID: 593385256}
   seventhCam: {fileID: 122359390}
   eighthCam: {fileID: 351422000}
---- !u!114 &963194232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8578d21b27bf7ef4db639f37d8ccf953, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &963194233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30871,14 +30886,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbaa80705124f9e439d56ca6d5e6db69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brokerAddress: 
+  brokerAddress: ac4301c73f0441c6ad2af6eab0ed4b24.s1.eu.hivemq.cloud
   brokerPort: 8883
   isEncrypted: 1
   connectionDelay: 500
   timeoutOnConnection: 30000
   autoConnect: 1
-  mqttUserName: 
-  mqttPassword: 
+  mqttUserName: twilligent-user
+  mqttPassword: Twilligent-password123
   autoTest: 1
   consoleInputField: {fileID: 0}
   encryptedToggle: {fileID: 0}
@@ -30900,8 +30915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6afd0e274d1f847b6ff791f6368bf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endEffector: {fileID: 0}
-  baseLink: {fileID: 0}
+  baseLink: {fileID: 769827925}
   ikSetpointReference: {fileID: 1679132936}
   rightHand: {fileID: 1315484254}
   leftHand: {fileID: 559736618}
@@ -46283,6 +46297,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MilkCrate
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f319ccb0477c3fb4a917e7fb1564e7e4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6880849218749878672, guid: f319ccb0477c3fb4a917e7fb1564e7e4, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -47331,6 +47349,10 @@ PrefabInstance:
     - target: {fileID: 1306947298092351343, guid: 7b0eed46c3c2a97449181da4ee4ad35a, type: 3}
       propertyPath: m_Name
       value: CubeInsert 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1306947298092351343, guid: 7b0eed46c3c2a97449181da4ee4ad35a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1830965071992530389, guid: 7b0eed46c3c2a97449181da4ee4ad35a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -53147,6 +53169,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1569904101}
+  - component: {fileID: 1569904102}
   m_Layer: 0
   m_Name: origin
   m_TagString: Untagged
@@ -53169,6 +53192,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1569904102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569904100}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb725b7ffec59d14caf0043ee2ab1ffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1570573269
 GameObject:
   m_ObjectHideFlags: 0
@@ -54203,7 +54238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PermittedDisplacementAxes: -1
-  m_ConstrainedAxisDisplacementMode: 1
+  m_ConstrainedAxisDisplacementMode: 2
   m_TwoHandedRotationMode: 1
   m_AllowOneHandedScaling: 1
   m_AllowTwoHandedScaling: 0
@@ -55703,6 +55738,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2b8000d78f902a743a225f65d612c4d6, type: 3}
       propertyPath: m_Name
       value: CeilingHungRack3 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2b8000d78f902a743a225f65d612c4d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -61383,6 +61422,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CubeInsert 2 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1306947298092351343, guid: 7b0eed46c3c2a97449181da4ee4ad35a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1830965071992530389, guid: 7b0eed46c3c2a97449181da4ee4ad35a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.689
@@ -61639,6 +61682,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2b8000d78f902a743a225f65d612c4d6, type: 3}
       propertyPath: m_Name
       value: CeilingHungRack3 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2b8000d78f902a743a225f65d612c4d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -63303,6 +63350,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5b455cc34bda28e4d940927c6d7742a5, type: 3}
       propertyPath: m_Name
       value: SmallAirtightContainer
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5b455cc34bda28e4d940927c6d7742a5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7418098771544918504, guid: 5b455cc34bda28e4d940927c6d7742a5, type: 3}
       propertyPath: m_Materials.Array.data[0]
