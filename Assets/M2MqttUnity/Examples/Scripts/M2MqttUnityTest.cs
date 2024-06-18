@@ -33,6 +33,7 @@ using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using M2MqttUnity;
 using Defective.JSON;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Examples for the M2MQTT library (https://github.com/eclipse/paho.mqtt.m2mqtt),
@@ -46,15 +47,7 @@ namespace M2MqttUnity.Examples
     {
         [Tooltip("Set this to true to perform a testing cycle automatically on startup")]
         public bool autoTest = false;
-        [Header("User Interface")]
-        public InputField consoleInputField;
-        public Toggle encryptedToggle;
-        public InputField addressInputField;
-        public InputField portInputField;
-        public Button connectButton;
-        public Button disconnectButton;
-        public Button testPublishButton;
-        public Button clearButton;
+        public bool simulationMode = false;
 
         private List<string> eventMessages = new List<string>();
         private bool updateUI = false;
@@ -117,23 +110,16 @@ namespace M2MqttUnity.Examples
             // Change to publish to the control topic once it is connected.
             client.Publish("/til-tak/drammen/production/line/robot/control", System.Text.Encoding.UTF8.GetBytes(msg), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
             Debug.Log("Test message published");
-            AddUiMessage("Test message published.");
         }
 
         public void SetBrokerAddress(string brokerAddress)
         {
-            if (addressInputField && !updateUI)
-            {
-                this.brokerAddress = brokerAddress;
-            }
+            this.brokerAddress = brokerAddress;
         }
 
         public void SetBrokerPort(string brokerPort)
         {
-            if (portInputField && !updateUI)
-            {
-                int.TryParse(brokerPort, out this.brokerPort);
-            }
+            int.TryParse(brokerPort, out this.brokerPort);
         }
 
         public void SetEncrypted(bool isEncrypted)
@@ -141,35 +127,14 @@ namespace M2MqttUnity.Examples
             this.isEncrypted = isEncrypted;
         }
 
-
-        public void SetUiMessage(string msg)
-        {
-            if (consoleInputField != null)
-            {
-                consoleInputField.text = msg;
-                updateUI = true;
-            }
-        }
-
-        public void AddUiMessage(string msg)
-        {
-            if (consoleInputField != null)
-            {
-                consoleInputField.text += msg + "\n";
-                updateUI = true;
-            }
-        }
-
         protected override void OnConnecting()
         {
             base.OnConnecting();
-            SetUiMessage("Connecting to broker on " + brokerAddress + ":" + brokerPort.ToString() + "...\n");
         }
 
         protected override void OnConnected()
         {
             base.OnConnected();
-            SetUiMessage("Connected to broker on " + brokerAddress + "\n");
 
             connected = true;
             if (autoTest)
@@ -181,8 +146,12 @@ namespace M2MqttUnity.Examples
         protected override void SubscribeTopics()
         {
             client.Subscribe(new string[] { "/til-tak/drammen/production/line/robot/data" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-            client.Subscribe(new string[] { "/til-tak/drammen/production/line/latency-test/input" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-            client.Subscribe(new string[] { "/til-tak/drammen/production/line/robot/control" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            client.Subscribe(new string[] { "/til-tak/drammen/production/line/box" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            if (simulationMode)
+            {
+                client.Subscribe(new string[] { "/til-tak/drammen/production/line/robot/control" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
+            }
+            //client.Subscribe(new string[] { "/til-tak/drammen/production/line/latency-test/input" }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
         }
 
         protected override void UnsubscribeTopics()
@@ -192,72 +161,22 @@ namespace M2MqttUnity.Examples
 
         protected override void OnConnectionFailed(string errorMessage)
         {
-            AddUiMessage("CONNECTION FAILED! " + errorMessage);
+            print("CONNECTION FAILED! " + errorMessage);
         }
 
         protected override void OnDisconnected()
         {
-            AddUiMessage("Disconnected.");
+            print("Disconnected.");
             connected = false;
         }
 
         protected override void OnConnectionLost()
         {
-            AddUiMessage("CONNECTION LOST!");
-        }
-
-        private void UpdateUI()
-        {
-            if (client == null)
-            {
-                if (connectButton != null)
-                {
-                    connectButton.interactable = true;
-                    disconnectButton.interactable = false;
-                    testPublishButton.interactable = false;
-                }
-            }
-            else
-            {
-                if (testPublishButton != null)
-                {
-                    testPublishButton.interactable = client.IsConnected;
-                }
-                if (disconnectButton != null)
-                {
-                    disconnectButton.interactable = client.IsConnected;
-                }
-                if (connectButton != null)
-                {
-                    connectButton.interactable = !client.IsConnected;
-                }
-            }
-            if (addressInputField != null && connectButton != null)
-            {
-                addressInputField.interactable = connectButton.interactable;
-                addressInputField.text = brokerAddress;
-            }
-            if (portInputField != null && connectButton != null)
-            {
-                portInputField.interactable = connectButton.interactable;
-                portInputField.text = brokerPort.ToString();
-            }
-            if (encryptedToggle != null && connectButton != null)
-            {
-                encryptedToggle.interactable = connectButton.interactable;
-                encryptedToggle.isOn = isEncrypted;
-            }
-            if (clearButton != null && connectButton != null)
-            {
-                clearButton.interactable = connectButton.interactable;
-            }
-            updateUI = false;
+            print("CONNECTION LOST!");
         }
 
         protected override void Start()
         {
-            SetUiMessage("Ready.");
-            updateUI = true;
             base.Start();
         }
 
@@ -284,9 +203,9 @@ namespace M2MqttUnity.Examples
                     anglesInTemp[4] = (float)(double.Parse(data.GetField("joint_5").ToString().Trim('"'), NumberStyles.Any, ci));
                     anglesInTemp[5] = (float)(double.Parse(data.GetField("joint_6").ToString().Trim('"'), NumberStyles.Any, ci));
                     this.gameObject.GetComponent<UDPConverter>().anglesIn = anglesInTemp;
-                    string path = "Assets/sensordata.txt"; 
+                    string path = "Assets/sensordata.txt";
                     StreamWriter writer = new StreamWriter(path, true);
-                    writer.WriteLine(Time.time.ToString().Replace(",", ".") 
+                    writer.WriteLine(Time.time.ToString().Replace(",", ".")
                         + "," + anglesInTemp[0].ToString().Replace(",", ".")
                         + "," + anglesInTemp[1].ToString().Replace(",", ".")
                         + "," + anglesInTemp[2].ToString().Replace(",", ".")
@@ -302,7 +221,7 @@ namespace M2MqttUnity.Examples
                 }
 
             }
-            else if (topic == "/til-tak/drammen/production/line/robot/control")
+            else if (topic == "/til-tak/drammen/production/line/robot/control" && simulationMode)
             {
                 float[] anglesInTemp = new float[6];
                 JSONObject data = new JSONObject(msg);
@@ -318,45 +237,74 @@ namespace M2MqttUnity.Examples
                     anglesInTemp[3] = (float)(double.Parse(data.GetField("roll").ToString().Trim('"'), NumberStyles.Any, ci));
                     anglesInTemp[4] = (float)(double.Parse(data.GetField("pitch").ToString().Trim('"'), NumberStyles.Any, ci));
                     anglesInTemp[5] = (float)(double.Parse(data.GetField("yaw").ToString().Trim('"'), NumberStyles.Any, ci));
-                    string path = "Assets/controldata.txt";
-                    StreamWriter writer = new StreamWriter(path, true);
-                    writer.WriteLine(Time.time.ToString().Replace(",", ".")
-                        + "," + anglesInTemp[0].ToString().Replace(",", ".")
-                        + "," + anglesInTemp[1].ToString().Replace(",", ".")
-                        + "," + anglesInTemp[2].ToString().Replace(",", ".")
-                        + "," + anglesInTemp[3].ToString().Replace(",", ".")
-                        + "," + anglesInTemp[4].ToString().Replace(",", ".")
-                        + "," + anglesInTemp[5].ToString().Replace(",", "."));
-                    writer.Close();
+                    //string path = "Assets/controldata.txt";
+                    //StreamWriter writer = new StreamWriter(path, true);
+                    //writer.WriteLine(Time.time.ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[0].ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[1].ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[2].ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[3].ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[4].ToString().Replace(",", ".")
+                    //    + "," + anglesInTemp[5].ToString().Replace(",", "."));
+                    //writer.Close();
                 }
                 catch
                 {
                     print("ERROR: Message not in the correct format");
                 }
             }
-            else if (topic == "/til-tak/drammen/production/line/latency-test/input")
+            // Latency logging
+            //else if (topic == "/til-tak/drammen/production/line/latency-test/input")
+            //{
+            //    inputTime.Add(Time.timeAsDouble);
+            //    List<double> latency = new List<double>();
+            //    string outputString = "";
+            //    string inputString = "";
+            //    string latencyString = "";
+            //    for (int i = 0; i < inputTime.Count; i++)
+            //    {
+            //        latency.Add(inputTime[i] - outputTime[i]);
+
+            //        outputString += outputTime[i].ToString().Replace(",", ".") + ",";
+            //        inputString += inputTime[i].ToString().Replace(",", ".") + ",";
+            //        latencyString = latency[i].ToString().Replace(",", ".") + ",";
+            //    }
+
+            //    print("Output time  : " + outputString);
+            //    print("Input time   : " + inputString); 
+            //    print("Latency time : " + latencyString);
+            //    string path = "Assets/latencydata.txt";
+            //    StreamWriter writer = new StreamWriter(path, true);
+            //    writer.WriteLine(latencyString);
+            //    writer.Close();
+            //}
+            else if (topic == "/til-tak/drammen/production/line/box")
             {
-                inputTime.Add(Time.timeAsDouble);
-                List<double> latency = new List<double>();
-                string outputString = "";
-                string inputString = "";
-                string latencyString = "";
-                for (int i = 0; i < inputTime.Count; i++)
+                JSONObject data = new JSONObject(msg);
+                print(data.ToString());
+                CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
+                try
                 {
-                    latency.Add(inputTime[i] - outputTime[i]);
+                    float xDivision = 750.0f;
+                    float yDivision = 481.52f;
+                    float xAdjust = 0.575f;
+                    float yAdjust = 0.46f;
+                    float x = (float)(double.Parse(data.GetField("x").ToString().Trim('"'), NumberStyles.Any, ci));
+                    float y = (float)(double.Parse(data.GetField("y").ToString().Trim('"'), NumberStyles.Any, ci));
+                    float theta = (float)(double.Parse(data.GetField("theta").ToString().Trim('"'), NumberStyles.Any, ci));
+                    ArucoBox.coordinatesChanged = true;
+                    Vector3 newCoordinates = new Vector3(x, ArucoBox.coordinates.y, y);
+                    Vector3 coordinates = new Vector3((newCoordinates.x / xDivision) - xAdjust, newCoordinates.y, (newCoordinates.z / yDivision) - yAdjust);
 
-                    outputString += outputTime[i].ToString().Replace(",", ".") + ",";
-                    inputString += inputTime[i].ToString().Replace(",", ".") + ",";
-                    latencyString = latency[i].ToString().Replace(",", ".") + ",";
+                    ArucoBox.yRotation = theta;
+                    ArucoBox.coordinates = coordinates;
                 }
-
-                print("Output time  : " + outputString);
-                print("Input time   : " + inputString); 
-                print("Latency time : " + latencyString);
-                string path = "Assets/latencydata.txt";
-                StreamWriter writer = new StreamWriter(path, true);
-                writer.WriteLine(latencyString);
-                writer.Close();
+                catch
+                {
+                    print("ERROR: Message not in the correct format");
+                }
             }
         }
 
@@ -367,7 +315,7 @@ namespace M2MqttUnity.Examples
 
         private void ProcessMessage(string msg)
         {
-            AddUiMessage("Received: " + msg);
+            print("Received: " + msg);
         }
 
         protected override void Update()
@@ -381,10 +329,6 @@ namespace M2MqttUnity.Examples
                     ProcessMessage(msg);
                 }
                 eventMessages.Clear();
-            }
-            if (updateUI)
-            {
-                UpdateUI();
             }
         }
 
