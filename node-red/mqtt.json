@@ -1,0 +1,673 @@
+[
+    {
+        "id": "8ae481137c89c70d",
+        "type": "tab",
+        "label": "MQTT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3c0dcb657906dd67",
+        "type": "group",
+        "z": "8ae481137c89c70d",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "776ae8a869257248",
+            "973504de23f5178f",
+            "2adf077437a8884f",
+            "ebfb9713ac63bbf5",
+            "c0f6bd6832e43154",
+            "b6f699773ee557ae",
+            "af55328d5ae2a255",
+            "2c9a0140e4c06459",
+            "9deb6adc2368ed21",
+            "b5d458f2ac376e34",
+            "651d56a8a271a3a7"
+        ],
+        "x": 114,
+        "y": 39,
+        "w": 1192,
+        "h": 202
+    },
+    {
+        "id": "457ee85a76317244",
+        "type": "group",
+        "z": "8ae481137c89c70d",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "ee10ef85c01c134c",
+            "94af525f3a975664",
+            "dd361843bc12d4e6",
+            "01833eadcc4b69a8",
+            "4352dd01c6aa1d97"
+        ],
+        "x": 114,
+        "y": 259,
+        "w": 1052,
+        "h": 262
+    },
+    {
+        "id": "6b54bd69a16d555d",
+        "type": "group",
+        "z": "8ae481137c89c70d",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "fbdd1ba661228952",
+            "130ac3723e9b3179",
+            "966bedc5d31f263b"
+        ],
+        "x": 114,
+        "y": 579,
+        "w": 872,
+        "h": 142
+    },
+    {
+        "id": "776ae8a869257248",
+        "type": "ROS2 Type",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "ros2pkg": "std_msgs",
+        "ros2message": "String",
+        "x": 220,
+        "y": 140,
+        "wires": [
+            [
+                "973504de23f5178f"
+            ]
+        ]
+    },
+    {
+        "id": "973504de23f5178f",
+        "type": "Subscriber",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "topic": "cobot_to_unity_mqtt",
+        "domain": "66737aac6e87d9d5",
+        "props": [],
+        "selectedtype": "std_msgs/String",
+        "x": 430,
+        "y": 140,
+        "wires": [
+            [
+                "2c9a0140e4c06459"
+            ]
+        ]
+    },
+    {
+        "id": "2adf077437a8884f",
+        "type": "function",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "Object to string",
+        "func": "global.set(\"pushed\", msg.payload)\nvar p = global.get(\"pushed\")\n\np = p['data']\n\nvar msg1 = {}\n\nmsg1.payload = Buffer.from(p, 'ascii')\n\nreturn msg1",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 140,
+        "wires": [
+            [
+                "af55328d5ae2a255"
+            ]
+        ]
+    },
+    {
+        "id": "ebfb9713ac63bbf5",
+        "type": "ROS2 Type",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "ros2pkg": "std_msgs",
+        "ros2message": "String",
+        "x": 223,
+        "y": 199,
+        "wires": [
+            [
+                "c0f6bd6832e43154"
+            ]
+        ]
+    },
+    {
+        "id": "c0f6bd6832e43154",
+        "type": "Subscriber",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "topic": "ArUco",
+        "domain": "66737aac6e87d9d5",
+        "props": [],
+        "selectedtype": "std_msgs/String",
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "9deb6adc2368ed21"
+            ]
+        ]
+    },
+    {
+        "id": "b6f699773ee557ae",
+        "type": "function",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "Object to string",
+        "func": "let dataString = msg.payload.data;\n\n// Split the string by the '#' character\nlet parts = dataString.split('#');\n\n// Initialize messages for each float value\nlet x = parseFloat(parts[0]);\nlet y = parseFloat(parts[1]);\nlet theta = Math.abs(parseFloat(parts[2]));\n\nlet output = \"{\" + '\"x\":' + String(x) + ',\"y\":' + String(y) + ',\"theta\":' + String(theta) + \"}\";\nvar msg1 = {}\n\n//msg1.payload =  p\nmsg1.payload = Buffer.from(output, 'ascii')\n//let byteArray = Array.prototype.slice.call(buffer, 0)\nconsole.log(output)\nreturn msg1",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 200,
+        "wires": [
+            [
+                "b5d458f2ac376e34"
+            ]
+        ]
+    },
+    {
+        "id": "af55328d5ae2a255",
+        "type": "mqtt out",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/robot/data",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6c85b977d5d190ae",
+        "x": 1120,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "2c9a0140e4c06459",
+        "type": "delay",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 140,
+        "wires": [
+            [
+                "2adf077437a8884f"
+            ]
+        ]
+    },
+    {
+        "id": "9deb6adc2368ed21",
+        "type": "delay",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "10",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 200,
+        "wires": [
+            [
+                "b6f699773ee557ae"
+            ]
+        ]
+    },
+    {
+        "id": "b5d458f2ac376e34",
+        "type": "mqtt out",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/box",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6c85b977d5d190ae",
+        "x": 1100,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "651d56a8a271a3a7",
+        "type": "comment",
+        "z": "8ae481137c89c70d",
+        "g": "3c0dcb657906dd67",
+        "name": "Sensor data to MQTT",
+        "info": "Controls gripper from unity admin",
+        "x": 240,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ee10ef85c01c134c",
+        "type": "Publisher",
+        "z": "8ae481137c89c70d",
+        "g": "457ee85a76317244",
+        "topic": "unity_to_cobot_mqtt",
+        "domain": "66737aac6e87d9d5",
+        "props": [],
+        "selectedtype": "std_msgs/String",
+        "x": 1060,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "94af525f3a975664",
+        "type": "mqtt in",
+        "z": "8ae481137c89c70d",
+        "g": "457ee85a76317244",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/robot/control",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6c85b977d5d190ae",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 480,
+        "wires": [
+            [
+                "4352dd01c6aa1d97"
+            ]
+        ]
+    },
+    {
+        "id": "dd361843bc12d4e6",
+        "type": "comment",
+        "z": "8ae481137c89c70d",
+        "g": "457ee85a76317244",
+        "name": "Game engine and PLC to gripper and cobot",
+        "info": "Controls gripper from unity admin",
+        "x": 310,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "fbdd1ba661228952",
+        "type": "comment",
+        "z": "8ae481137c89c70d",
+        "d": true,
+        "g": "6b54bd69a16d555d",
+        "name": "Latency test",
+        "info": "Controls gripper from unity admin",
+        "x": 210,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "130ac3723e9b3179",
+        "type": "mqtt in",
+        "z": "8ae481137c89c70d",
+        "d": true,
+        "g": "6b54bd69a16d555d",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/latency-test/output",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6c85b977d5d190ae",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 330,
+        "y": 680,
+        "wires": [
+            [
+                "966bedc5d31f263b"
+            ]
+        ]
+    },
+    {
+        "id": "966bedc5d31f263b",
+        "type": "mqtt out",
+        "z": "8ae481137c89c70d",
+        "d": true,
+        "g": "6b54bd69a16d555d",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/latency-test/input",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6c85b977d5d190ae",
+        "x": 770,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "01833eadcc4b69a8",
+        "type": "ROS2 Type",
+        "z": "8ae481137c89c70d",
+        "g": "457ee85a76317244",
+        "ros2pkg": "std_msgs",
+        "ros2message": "String",
+        "x": 860,
+        "y": 480,
+        "wires": [
+            [
+                "ee10ef85c01c134c"
+            ]
+        ]
+    },
+    {
+        "id": "4352dd01c6aa1d97",
+        "type": "function",
+        "z": "8ae481137c89c70d",
+        "g": "457ee85a76317244",
+        "name": "JSON to std_msgs/String",
+        "func": "let msg1 = {}\nmsg1.data = JSON.stringify(msg.payload)\nreturn msg1",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 480,
+        "wires": [
+            [
+                "01833eadcc4b69a8"
+            ]
+        ]
+    },
+    {
+        "id": "d7d34fb6c93be1b9",
+        "type": "s7 out",
+        "z": "8ae481137c89c70d",
+        "endpoint": "88acdcc46ba53914",
+        "variable": "Gripper",
+        "name": "",
+        "x": 1020,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4f8c96871ccc5c09",
+        "type": "json",
+        "z": "8ae481137c89c70d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 590,
+        "y": 360,
+        "wires": [
+            [
+                "4dfc4250cee6032a"
+            ]
+        ]
+    },
+    {
+        "id": "94af7d712de45785",
+        "type": "mqtt in",
+        "z": "8ae481137c89c70d",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/gripper/control",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6c85b977d5d190ae",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 360,
+        "wires": [
+            [
+                "4f8c96871ccc5c09"
+            ]
+        ]
+    },
+    {
+        "id": "4dfc4250cee6032a",
+        "type": "function",
+        "z": "8ae481137c89c70d",
+        "name": "Object to string",
+        "func": "global.set(\"pushed\", msg.payload)\nlet p = global.get(\"pushed\")\n\nlet output = 0;\nconsole.log(p);\nlet obj = JSON.parse(p);\nlet state = obj['state'];\n\nif (state == \"close\")\n{\n    output = 2;\n}\nelse if (state == \"open\")\n{\n    output = 1;\n}\n\nvar msg1 = {}\n\nmsg1.payload = output\n\nreturn msg1",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 360,
+        "wires": [
+            [
+                "d7d34fb6c93be1b9"
+            ]
+        ]
+    },
+    {
+        "id": "a70f603e12d42f9b",
+        "type": "s7 out",
+        "z": "8ae481137c89c70d",
+        "endpoint": "88acdcc46ba53914",
+        "variable": "ConveyorSpeed",
+        "name": "",
+        "x": 1040,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "2a543213e90bc5fc",
+        "type": "function",
+        "z": "8ae481137c89c70d",
+        "name": "Object to string",
+        "func": "global.set(\"pushed\", msg.payload)\nlet p = global.get(\"pushed\")\n\nlet output = 0;\nconsole.log(p);\nlet obj = JSON.parse(p);\nlet state = obj['speed'];\n\noutput = parseInt(state);\n\nvar msg1 = {}\n\nmsg1.payload = output\n\nreturn msg1",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 420,
+        "wires": [
+            [
+                "a70f603e12d42f9b"
+            ]
+        ]
+    },
+    {
+        "id": "5dd1d2a92265551c",
+        "type": "json",
+        "z": "8ae481137c89c70d",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 590,
+        "y": 420,
+        "wires": [
+            [
+                "2a543213e90bc5fc"
+            ]
+        ]
+    },
+    {
+        "id": "f9625358e5138422",
+        "type": "mqtt in",
+        "z": "8ae481137c89c70d",
+        "name": "",
+        "topic": "/til-tak/drammen/production/line/conveyor/control",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6c85b977d5d190ae",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 320,
+        "y": 420,
+        "wires": [
+            [
+                "5dd1d2a92265551c"
+            ]
+        ]
+    },
+    {
+        "id": "66737aac6e87d9d5",
+        "type": "dds-settings",
+        "domain": "0"
+    },
+    {
+        "id": "6c85b977d5d190ae",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "ac4301c73f0441c6ad2af6eab0ed4b24.s1.eu.hivemq.cloud",
+        "port": "8883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "88acdcc46ba53914",
+        "type": "s7 endpoint",
+        "transport": "iso-on-tcp",
+        "address": "192.168.5.200",
+        "port": "102",
+        "rack": "0",
+        "slot": "1",
+        "localtsaphi": "01",
+        "localtsaplo": "00",
+        "remotetsaphi": "01",
+        "remotetsaplo": "00",
+        "connmode": "rack-slot",
+        "adapter": "",
+        "busaddr": "2",
+        "cycletime": "100",
+        "timeout": "1500",
+        "name": "",
+        "vartable": [
+            {
+                "addr": "DB110,W6",
+                "name": "Gripper"
+            },
+            {
+                "addr": "DB400,W0",
+                "name": "Box Coords x"
+            },
+            {
+                "addr": "DB400,W2",
+                "name": "Box Coords y"
+            },
+            {
+                "addr": "DB400,W4",
+                "name": "Box Coords w"
+            },
+            {
+                "addr": "DB200,R0",
+                "name": "X"
+            },
+            {
+                "addr": "DB200,R4",
+                "name": "Y"
+            },
+            {
+                "addr": "DB200,R8",
+                "name": "Z"
+            },
+            {
+                "addr": "DB200,R12",
+                "name": "Rx"
+            },
+            {
+                "addr": "DB200,R16",
+                "name": "Ry"
+            },
+            {
+                "addr": "DB200,R20",
+                "name": "Rz"
+            },
+            {
+                "addr": "DB300,R0",
+                "name": "ConveyorSpeed"
+            }
+        ]
+    }
+]
