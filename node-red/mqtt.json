@@ -124,7 +124,7 @@
         "z": "8ae481137c89c70d",
         "g": "3c0dcb657906dd67",
         "name": "Object to string",
-        "func": "global.set(\"pushed\", msg.payload)\nvar p = global.get(\"pushed\")\n\np = p['data']\n\nvar msg1 = {}\n\nmsg1.payload = Buffer.from(p, 'ascii')\n\nreturn msg1",
+        "func": "var p = msg.data\n\nvar msg1 = {}\n\nmsg1.payload = Buffer.from(p, 'ascii')\n\nreturn msg1",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -146,8 +146,8 @@
         "g": "3c0dcb657906dd67",
         "ros2pkg": "std_msgs",
         "ros2message": "String",
-        "x": 223,
-        "y": 199,
+        "x": 220,
+        "y": 200,
         "wires": [
             [
                 "c0f6bd6832e43154"
@@ -177,7 +177,7 @@
         "z": "8ae481137c89c70d",
         "g": "3c0dcb657906dd67",
         "name": "Object to string",
-        "func": "let dataString = msg.payload.data;\n\n// Split the string by the '#' character\nlet parts = dataString.split('#');\n\n// Initialize messages for each float value\nlet x = parseFloat(parts[0]);\nlet y = parseFloat(parts[1]);\nlet theta = Math.abs(parseFloat(parts[2]));\n\nlet output = \"{\" + '\"x\":' + String(x) + ',\"y\":' + String(y) + ',\"theta\":' + String(theta) + \"}\";\nvar msg1 = {}\n\n//msg1.payload =  p\nmsg1.payload = Buffer.from(output, 'ascii')\n//let byteArray = Array.prototype.slice.call(buffer, 0)\nconsole.log(output)\nreturn msg1",
+        "func": "let dataString = msg.data;\n\n// Split the string by the '#' character\nlet parts = dataString.split('#');\n\n// Initialize messages for each float value\nlet x = parseFloat(parts[0]);\nlet y = parseFloat(parts[1]);\nlet theta = Math.abs(parseFloat(parts[2]));\n\nlet output = \"{\" + '\"x\":' + String(x) + ',\"y\":' + String(y) + ',\"theta\":' + String(theta) + \"}\";\nvar msg1 = {}\n\n//msg1.payload =  p\nmsg1.payload = Buffer.from(output, 'ascii')\n//let byteArray = Array.prototype.slice.call(buffer, 0)\nconsole.log(output)\nreturn msg1",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
