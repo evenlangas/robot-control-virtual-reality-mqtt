@@ -4,7 +4,7 @@ This Unity project enables the remote control of a robot in virtual reality (VR)
 
 Press below to see the video:
 
-[![Video](https://img.youtube.com/vi/OSOFGDyktJg/0.jpg)](https://www.youtube.com/watch?v=OSOFGDyktJg)
+[![Video](https://img.youtube.com/vi/xSnyjV5pLr4/0.jpg)](https://www.youtube.com/watch?v=xSnyjV5pLr4)
 
 
 ## Getting started with Node-RED and ROS2
