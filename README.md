@@ -6,6 +6,7 @@ Press below to see the video:
 
 [![Video](https://img.youtube.com/vi/xSnyjV5pLr4/0.jpg)](https://www.youtube.com/watch?v=xSnyjV5pLr4)
 
+A video of the execution of experiments presented in the research paper can be seen [here](https://drive.google.com/file/d/1-PHIBYJ98Cfk90Qt5onyo6cpvmSN6yz8/view).
 
 ## Getting started with Node-RED and ROS2
 
